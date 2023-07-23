@@ -25,6 +25,7 @@ namespace Hygie.API.Controllers
         }
 
         [HttpPost("Create")]
+        [AllowAnonymous]
         [ProducesDefaultResponseType(typeof(int))]
         public async Task<ActionResult> CreateUser(CreateUserCommand command)
         {

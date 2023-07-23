@@ -39,7 +39,8 @@ namespace Hygie.App.Commands.Auth
             {
                 UserId = userId,
                 Name = userName!,
-                Token = token
+                Token = token, 
+                Roles = roles
             };
         }
     }
