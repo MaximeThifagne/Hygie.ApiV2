@@ -10,7 +10,7 @@ namespace Hygie.App.Commands.User
         public required string Email { get; set; }
         public required string Password { get; set; }
         public required string ConfirmationPassword { get; set; }
-        public List<string>? Roles { get; set; }
+        public required string Role { get; set; }
     }
 
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
@@ -22,7 +22,7 @@ namespace Hygie.App.Commands.User
         }
         public async Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            var (isSucceed, userId) = await _identityService.CreateUserAsync(request.UserName, request.Password, request.Email, request.FullName, request.Roles);
+            var (isSucceed, userId) = await _identityService.CreateUserAsync(request.UserName, request.Password, request.Email, request.FullName, request.Role);
             return isSucceed ? 1 : 0;
         }
     }

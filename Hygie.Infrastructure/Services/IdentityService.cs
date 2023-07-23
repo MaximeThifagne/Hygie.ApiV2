@@ -39,7 +39,7 @@ namespace Hygie.Infrastructure.Services
 
 
         // Return multiple value
-        public async Task<(bool isSucceed, string userId)> CreateUserAsync(string userName, string password, string email, string fullName, List<string>? roles)
+        public async Task<(bool isSucceed, string userId)> CreateUserAsync(string userName, string password, string email, string fullName, string? role)
         {
             var user = new ApplicationUser()
             {
@@ -55,9 +55,9 @@ namespace Hygie.Infrastructure.Services
                 throw new ValidationException(result.Errors);
             }
 
-            if (roles != null)
+            if (role != null)
             {
-                var addUserRole = await _userManager.AddToRolesAsync(user, roles);
+                var addUserRole = await _userManager.AddToRoleAsync(user, role);
 
                 if (!addUserRole.Succeeded)
                 {
