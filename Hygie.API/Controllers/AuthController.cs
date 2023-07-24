@@ -1,5 +1,6 @@
 ﻿using Hygie.App.Commands.Auth;
 using Hygie.App.DTOs;
+using Hygie.Infrastructure.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,18 @@ namespace Hygie.API.Controllers
         [ProducesDefaultResponseType(typeof(AuthResponseDTO))]
         public async Task<IActionResult> Login([FromBody] AuthCommand command)
         {
-            return Ok(await _mediator.Send(command));
+            try
+            {
+                return Ok(await _mediator.Send(command));
+            }
+            catch(BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 500);
+            }
         }
     }
 }

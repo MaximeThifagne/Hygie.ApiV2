@@ -1,6 +1,7 @@
 ﻿using Hygie.App.Commands.User;
 using Hygie.App.DTOs;
 using Hygie.App.Queries.User;
+using Hygie.Infrastructure.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +30,18 @@ namespace Hygie.API.Controllers
         [ProducesDefaultResponseType(typeof(int))]
         public async Task<ActionResult> CreateUser(CreateUserCommand command)
         {
-            return Ok(await _mediator.Send(command));
+            try
+            {
+                return Ok(await _mediator.Send(command));
+            }
+            catch(ValidationException ex)
+            {
+                return BadRequest(ex.Errors.Values);
+            }
+            catch (Exception ex)
+            {
+                return Problem("Internal server error",ex.Message);
+            }
         }
 
         [HttpGet("GetAll")]
@@ -39,7 +51,8 @@ namespace Hygie.API.Controllers
             return Ok(await _mediator.Send(new GetUserQuery()));
         }
 
-        [HttpGet("GetAllByRole")]
+        [HttpGet("GetAllByRole/{roleName}")]
+        [Authorize(Roles = "Nurse, Admin")]
         [ProducesDefaultResponseType(typeof(List<UserResponseDTO>))]
         public async Task<IActionResult> GetAllUserByRoleAsync(string roleName)
         {
