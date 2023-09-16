@@ -31,7 +31,7 @@ namespace Hygie.App.Commands.Auth
                 throw new BadRequestException("Invalid username or password");
             }
 
-            var (userId, fullName, userName, email, roles) = await _identityService.GetUserDetailsAsync(await _identityService.GetUserIdAsync(request.UserName));
+            var (userId, fullName, userName, email, roles, profileImage) = await _identityService.GetUserDetailsAsync(await _identityService.GetUserIdAsync(request.UserName));
 
             string token = _tokenGenerator.GenerateJWTToken((userId, userName!, roles));
 
@@ -42,7 +42,8 @@ namespace Hygie.App.Commands.Auth
                 FullName = fullName!,
                 Email = email!,
                 Token = token, 
-                Roles = roles
+                Roles = roles, 
+                ProfileImage = profileImage
             };
         }
     }

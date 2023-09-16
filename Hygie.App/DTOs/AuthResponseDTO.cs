@@ -8,5 +8,6 @@
         public required string Name { get; set; }
         public required string Token { get; set; }
         public IList<string>? Roles { get; set; }
+        public byte[]? ProfileImage { get; set; }
     }
 }

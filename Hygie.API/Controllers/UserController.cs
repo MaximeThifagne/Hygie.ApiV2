@@ -109,6 +109,15 @@ namespace Hygie.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("EditProfilePicture")]
+        [Consumes("multipart/form-data")]
+        [ProducesDefaultResponseType(typeof(int))]
+        public async Task<IActionResult>UpdateProfilePicture([FromForm] UpdateProfilePictureCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
 
         [HttpPut("EditUserProfile/{id}")]
         [ProducesDefaultResponseType(typeof(int))]

@@ -19,7 +19,7 @@ namespace Hygie.App.Queries.User
         }
         public async Task<UserDetailsResponseDTO> Handle(GetUserDetailsQuery request, CancellationToken cancellationToken)
         {
-            var (userId, fullName, userName, email, roles) = await _identityService.GetUserDetailsAsync(request.UserId);
+            var (userId, fullName, userName, email, roles, profileImage) = await _identityService.GetUserDetailsAsync(request.UserId);
             return new UserDetailsResponseDTO() { Id = userId, FullName = fullName!, UserName = userName!, Email = email!, Roles = roles };
         }
     }

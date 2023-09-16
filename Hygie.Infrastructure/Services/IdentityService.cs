@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Hygie.Infrastructure.Common.Interfaces;
 using Hygie.Infrastructure.Common.Exceptions;
+using Microsoft.AspNetCore.Http;
+using Hygie.Core.Entities;
+using Microsoft.SqlServer.Server;
 
 namespace Hygie.Infrastructure.Services
 {
@@ -117,11 +120,11 @@ namespace Hygie.Infrastructure.Services
             return roles.Select(role => (role.Id, role.Name!)).ToList();
         }
 
-        public async Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles)> GetUserDetailsAsync(string userId)
+        public async Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles, byte[]? profileImage)> GetUserDetailsAsync(string userId)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new NotFoundException("User not found");
+            var user = await _userManager.Users.Include(u => u.ProfilePicture).FirstOrDefaultAsync(x => x.Id == userId) ?? throw new NotFoundException("User not found");
             var roles = await _userManager.GetRolesAsync(user);
-            return (user.Id, user.FullName, user.UserName, user.Email, roles);
+            return (user.Id, user.FullName, user.UserName, user.Email, roles, user.ProfilePicture?.Data);
         }
 
         public async Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles)> GetUserDetailsByUserNameAsync(string userName)
@@ -186,11 +189,49 @@ namespace Hygie.Infrastructure.Services
             return false;
         }
 
+        public async Task<bool> UpdateProfilePictureCommand(string id, IFormFile file)
+        {
+            var user = await _userManager.Users.Include(u => u.ProfilePicture).FirstOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException("User not found");
+            if (user != null)
+            {
+                byte[] fileBytes;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    fileBytes = memoryStream.ToArray();
+                }
+
+                if (user.ProfilePicture == null)
+                {
+                    user.ProfilePicture = new ProfilePicture
+                    {
+                        CreatedDate = DateTime.Now,
+                        Data = fileBytes,
+                        Name = file.FileName,
+                        Size = file.Length,
+                        Type = file.ContentType
+                    };
+                }
+                else
+                {
+                    user.ProfilePicture.Data = fileBytes;
+                    user.ProfilePicture.Name = file.FileName;
+                    user.ProfilePicture.Size = file.Length;
+                    user.ProfilePicture.Type = file.ContentType;
+                }
+
+                var result = await _userManager.UpdateAsync(user);
+                return result.Succeeded;
+            }
+
+            return false;
+        }
+
         public async Task<(string id, string roleName)> GetRoleByIdAsync(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
 
-            if(role == null)
+            if (role == null)
                 throw new NotFoundException(nameof(role), id);
 
             return (role.Id, role.Name!);
