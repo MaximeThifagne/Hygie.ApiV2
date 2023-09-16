@@ -262,5 +262,11 @@ namespace Hygie.Infrastructure.Services
 
             return result.Succeeded;
         }
+
+        public async Task<bool> IsExistByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user == null ? false : true;
+        }
     }
 }

@@ -35,5 +35,24 @@ namespace Hygie.API.Controllers
                 return Problem(ex.Message, statusCode: 500);
             }
         }
+
+        [HttpPost("ResetPassword")]
+        [ProducesDefaultResponseType(typeof(int))]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+        {
+            try
+            {
+                return Ok(await _mediator.Send(command));
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 500);
+            }
+
+        }
     }
 }

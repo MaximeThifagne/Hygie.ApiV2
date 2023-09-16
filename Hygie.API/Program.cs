@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using MediatR;
 using Hygie.App.Commands.Patients;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,9 @@ var _key = builder.Configuration["Jwt:Key"] ?? throw new NullReferenceException(
 var _issuer = builder.Configuration["Jwt:Issuer"];
 var _audience = builder.Configuration["Jwt:Audience"];
 var _expirtyMinutes = builder.Configuration["Jwt:ExpiryMinutes"];
+
+var emailConfig = builder.Configuration.GetSection("SmtpSettings");
+builder.Services.AddSingleton(emailConfig);
 
 //Configuration for token
 builder.Services.AddAuthentication(x =>
