@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Hygie.Core.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Hygie.Infrastructure.Common.Interfaces
 {
@@ -8,7 +9,7 @@ namespace Hygie.Infrastructure.Common.Interfaces
         Task<(bool isSucceed, string userId)> CreateUserAsync(string userName, string password, string email, string fullName, string role);
         Task<bool> SigninUserAsync(string userName, string password);
         Task<string> GetUserIdAsync(string userName);
-        Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles, byte[]? profileImage)> GetUserDetailsAsync(string userId);
+        Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles, ProfilePicture? profileImage)> GetUserDetailsAsync(string userId);
         Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles)> GetUserDetailsByUserNameAsync(string userName);
         Task<string> GetUserNameAsync(string userId);
         Task<bool> DeleteUserAsync(string userId);

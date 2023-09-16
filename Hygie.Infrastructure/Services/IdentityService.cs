@@ -120,11 +120,11 @@ namespace Hygie.Infrastructure.Services
             return roles.Select(role => (role.Id, role.Name!)).ToList();
         }
 
-        public async Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles, byte[]? profileImage)> GetUserDetailsAsync(string userId)
+        public async Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles, ProfilePicture? profileImage)> GetUserDetailsAsync(string userId)
         {
             var user = await _userManager.Users.Include(u => u.ProfilePicture).FirstOrDefaultAsync(x => x.Id == userId) ?? throw new NotFoundException("User not found");
             var roles = await _userManager.GetRolesAsync(user);
-            return (user.Id, user.FullName, user.UserName, user.Email, roles, user.ProfilePicture?.Data);
+            return (user.Id, user.FullName, user.UserName, user.Email, roles, user.ProfilePicture);
         }
 
         public async Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles)> GetUserDetailsByUserNameAsync(string userName)

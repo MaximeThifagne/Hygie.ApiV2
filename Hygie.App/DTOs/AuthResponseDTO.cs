@@ -1,4 +1,6 @@
-﻿namespace Hygie.App.DTOs
+﻿using Hygie.Core.Entities;
+
+namespace Hygie.App.DTOs
 {
     public class AuthResponseDTO
     {
@@ -8,6 +10,6 @@
         public required string Name { get; set; }
         public required string Token { get; set; }
         public IList<string>? Roles { get; set; }
-        public byte[]? ProfileImage { get; set; }
+        public ProfilePicture? ProfileImage { get; set; }
     }
 }
