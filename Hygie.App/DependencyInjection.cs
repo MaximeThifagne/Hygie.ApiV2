@@ -30,6 +30,9 @@ namespace Hygie.App
             .AddEntityFrameworkStores<HygieContext>()
             .AddDefaultTokenProviders();
 
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+                options.TokenLifespan = TimeSpan.FromHours(2));
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Default Lockout settings.

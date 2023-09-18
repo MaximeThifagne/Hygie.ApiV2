@@ -18,6 +18,7 @@ namespace Hygie.Infrastructure.Common.Interfaces
         Task<List<(string id, string? fullName, string? userName, string? email)>> GetAllUsersAsync();
         Task<bool> UpdateUserProfile(string id, string? fullName, string? email, IList<string>? roles);
         Task<bool> UpdateProfilePictureCommand(string id, IFormFile file);
+        Task<bool> ChangePassword(string id, string token, string password, string confirmPassword);
 
         // Role Section
         Task<bool> CreateRoleAsync(string roleName);

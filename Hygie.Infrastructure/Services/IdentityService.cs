@@ -6,6 +6,7 @@ using Hygie.Infrastructure.Common.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Hygie.Core.Entities;
 using Microsoft.SqlServer.Server;
+using System.Web;
 
 namespace Hygie.Infrastructure.Services
 {
@@ -267,6 +268,30 @@ namespace Hygie.Infrastructure.Services
         {
             var user = await _userManager.FindByEmailAsync(email);
             return user == null ? false : true;
+        }
+
+        public async Task<bool> ChangePassword(string id, string token, string password, string confirmPassword)
+        {
+            if(password != confirmPassword)
+                throw new BadHttpRequestException("Les mots de passes ne correspondent pas");
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user != null)
+            {
+                var securityToken =token.Replace(" ", "+");
+                var result = await _userManager.ResetPasswordAsync(user, securityToken, password);
+                if(result.Succeeded)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new BadRequestException($"An error occurred " + result.Errors.FirstOrDefault()?.Description);
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -54,5 +54,24 @@ namespace Hygie.API.Controllers
             }
 
         }
+
+        [HttpPost("ChangePassword")]
+        [ProducesDefaultResponseType(typeof(int))]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+        {
+            try
+            {
+                return Ok(await _mediator.Send(command));
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 500);
+            }
+
+        }
     }
 }
