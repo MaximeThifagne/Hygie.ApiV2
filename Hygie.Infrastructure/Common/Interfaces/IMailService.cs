@@ -9,5 +9,8 @@ namespace Hygie.Infrastructure.Common.Interfaces
     public interface IMailService
     {
         Task SendResetPasswordLink(string email);
+
+        Task SendConfirmEmailLink(string email);
     }
 }
+

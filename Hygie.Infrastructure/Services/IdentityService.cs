@@ -293,5 +293,26 @@ namespace Hygie.Infrastructure.Services
 
             return false;
         }
+
+        public async Task<bool> ConfirmEmail(string id, string token)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user != null)
+            {
+                var securityToken = token.Replace(" ", "+");
+                var result = await _userManager.ConfirmEmailAsync(user, securityToken);
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new BadRequestException($"An error occurred " + result.Errors.FirstOrDefault()?.Description);
+                }
+            }
+
+            return false;
+        }
     }
 }

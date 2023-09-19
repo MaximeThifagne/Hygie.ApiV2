@@ -23,12 +23,6 @@ namespace Hygie.Infrastructure.Services
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-            var smtpSettings = _configuration.GetSection("SmtpSettings");
-            var smtpServer = smtpSettings["SmtpServer"];
-            var smtpPort = int.Parse(smtpSettings["SmtpPort"]);
-            var smtpUsername = smtpSettings["SmtpUsername"];
-            var smtpPassword = smtpSettings["SmtpPassword"];
-
             if (user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -39,18 +33,47 @@ namespace Hygie.Infrastructure.Services
                 var from = new MailAddress("thifagne.maxime@gmail.com", "Votre application");
                 var to = new MailAddress(user.Email!);
 
-                using (var smtpClient = new SmtpClient(smtpServer, smtpPort))
+                await SendMail(subject, body, from, to);
+            }
+        }
+
+        public async Task SendConfirmEmailLink(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);            
+
+            if (user != null)
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var link = $"http://localhost:8080/confirm-email?userId={user.Id}&token={token}";
+
+                var subject = "Confirmer votre adresse email";
+                var body = $"Cliquez sur le lien suivant pour valider votre adresse email : {link}";
+                var from = new MailAddress("thifagne.maxime@gmail.com", "Votre application");
+                var to = new MailAddress(user.Email!);
+
+                await SendMail(subject, body, from, to);
+            }
+        }
+
+        private async Task SendMail(string subject, string body, MailAddress from, MailAddress to)
+        {
+            var smtpSettings = _configuration.GetSection("SmtpSettings");
+            var smtpServer = smtpSettings["SmtpServer"];
+            var smtpPort = int.Parse(smtpSettings["SmtpPort"]);
+            var smtpUsername = smtpSettings["SmtpUsername"];
+            var smtpPassword = smtpSettings["SmtpPassword"];
+
+            using (var smtpClient = new SmtpClient(smtpServer, smtpPort))
+            {
+                smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+
+                var mailMessage = new MailMessage(from, to)
                 {
-                    smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+                    Subject = subject,
+                    Body = body
+                };
 
-                    var mailMessage = new MailMessage(from, to)
-                    {
-                        Subject = subject,
-                        Body = body
-                    };
-
-                    await smtpClient.SendMailAsync(mailMessage);
-                }
+                await smtpClient.SendMailAsync(mailMessage);
             }
         }
     }

@@ -16,13 +16,20 @@ namespace Hygie.App.Commands.User
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
     {
         private readonly IIdentityService _identityService;
-        public CreateUserCommandHandler(IIdentityService identityService)
+        private readonly IMailService _mailService;
+        public CreateUserCommandHandler(IIdentityService identityService, IMailService mailService)
         {
             _identityService = identityService;
+            _mailService = mailService;
         }
         public async Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var (isSucceed, userId) = await _identityService.CreateUserAsync(request.UserName, request.Password, request.Email, request.FullName, request.Role);
+            if (isSucceed)
+            {
+                await _mailService.SendConfirmEmailLink(request.Email);
+            }
+
             return isSucceed ? 1 : 0;
         }
     }

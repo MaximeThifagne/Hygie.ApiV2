@@ -73,5 +73,24 @@ namespace Hygie.API.Controllers
             }
 
         }
+
+        [HttpPost("ConfirmEmail")]
+        [ProducesDefaultResponseType(typeof(int))]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailCommand command)
+        {
+            try
+            {
+                return Ok(await _mediator.Send(command));
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 500);
+            }
+
+        }
     }
 }
