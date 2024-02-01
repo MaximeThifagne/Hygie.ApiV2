@@ -15,6 +15,7 @@ namespace Hygie.API.Controllers
         public AuthController(IMediator mediator)
         {
             _mediator = mediator;
+           
         }
 
 

@@ -66,7 +66,7 @@ namespace Hygie.Infrastructure.Services
             using (var smtpClient = new SmtpClient(smtpServer, smtpPort))
             {
                 smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
-
+                smtpClient.EnableSsl = true;
                 var mailMessage = new MailMessage(from, to)
                 {
                     Subject = subject,
