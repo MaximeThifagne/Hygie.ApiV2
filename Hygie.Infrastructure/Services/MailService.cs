@@ -26,7 +26,7 @@ namespace Hygie.Infrastructure.Services
             if (user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var link = $"http://localhost:8080/reset-password?userId={user.Id}&token={token}";
+                var link = $"http://localhost:30000/reset-password?userId={user.Id}&token={token}";
 
                 var subject = "Réinitialisation de mot de passe";
                 var body = $"Cliquez sur le lien suivant pour réinitialiser votre mot de passe : {link}";
@@ -39,12 +39,14 @@ namespace Hygie.Infrastructure.Services
 
         public async Task SendConfirmEmailLink(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);            
+            var user = await _userManager.FindByEmailAsync(email);
+            
 
             if (user != null)
             {
+                IList<string> roles = await _userManager.GetRolesAsync(user);
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var link = $"http://localhost:8080/confirm-email?userId={user.Id}&token={token}";
+                var link = $"http://localhost:3000/confirm-email/{roles.FirstOrDefault()}?userId={user.Id}&token={token}";
 
                 var subject = "Confirmer votre adresse email";
                 var body = $"Cliquez sur le lien suivant pour valider votre adresse email : {link}";
