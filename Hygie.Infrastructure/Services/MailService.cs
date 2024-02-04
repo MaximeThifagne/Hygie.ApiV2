@@ -22,11 +22,12 @@ namespace Hygie.Infrastructure.Services
         public async Task SendResetPasswordLink(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-
+            
             if (user != null)
             {
+                IList<string> roles = await _userManager.GetRolesAsync(user);
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var link = $"http://localhost:30000/reset-password?userId={user.Id}&token={token}";
+                var link = $"http://localhost:3000/reset-password/{roles.FirstOrDefault()}?userId={user.Id}&token={token}";
 
                 var subject = "Réinitialisation de mot de passe";
                 var body = $"Cliquez sur le lien suivant pour réinitialiser votre mot de passe : {link}";
