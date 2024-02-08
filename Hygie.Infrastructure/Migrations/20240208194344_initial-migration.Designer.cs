@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hygie.Infrastructure.Migrations
 {
     [DbContext(typeof(HygieContext))]
-    [Migration("20230914195403_AddProfilePicture")]
-    partial class AddProfilePicture
+    [Migration("20240208194344_initial-migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Hygie.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Hygie.Core.Entities.Patient", b =>
+            modelBuilder.Entity("Hygie.Core.Entities.Adress", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,35 +33,71 @@ namespace Hygie.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Address")
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
+                    b.Property<string>("Complement")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Neighborhood")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Street")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Adresses");
+                });
+
+            modelBuilder.Entity("Hygie.Core.Entities.ProfilePicture", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Patients");
+                    b.ToTable("ProfilePictures");
                 });
 
             modelBuilder.Entity("Hygie.Infrastructure.Identity.ApplicationUser", b =>
@@ -71,6 +107,9 @@ namespace Hygie.Infrastructure.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<long?>("AdrressId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -109,8 +148,8 @@ namespace Hygie.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<byte[]>("ProfilePicture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<long?>("ProfilePictureId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -124,6 +163,8 @@ namespace Hygie.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdrressId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -131,6 +172,8 @@ namespace Hygie.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ProfilePictureId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -266,6 +309,21 @@ namespace Hygie.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Hygie.Infrastructure.Identity.ApplicationUser", b =>
+                {
+                    b.HasOne("Hygie.Core.Entities.Adress", "Adress")
+                        .WithMany()
+                        .HasForeignKey("AdrressId");
+
+                    b.HasOne("Hygie.Core.Entities.ProfilePicture", "ProfilePicture")
+                        .WithMany()
+                        .HasForeignKey("ProfilePictureId");
+
+                    b.Navigation("Adress");
+
+                    b.Navigation("ProfilePicture");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
