@@ -7,7 +7,6 @@ using Hygie.App;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using MediatR;
-using Hygie.App.Commands.Patients;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,8 +52,6 @@ builder.Services.AddSingleton<ITokenGenerator>(new TokenGenerator(_key!, _issuer
 
 // Include Infrastructur Dependency
 builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreatePatientCommandHandler).GetTypeInfo().Assembly));
 
 builder.Services.AddCors(c =>
 {

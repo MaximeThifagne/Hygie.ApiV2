@@ -10,9 +10,6 @@ namespace Hygie.Core.Entities
 {
     public class ProfilePicture : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         public long Size { get; set; }
 
         public string Name { get; set; }

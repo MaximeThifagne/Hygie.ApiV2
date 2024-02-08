@@ -12,8 +12,7 @@ namespace Hygie.Infrastructure.Data
         {
 
         }
-
-        public DbSet<Patient> Patients { get; set; }
         public DbSet<ProfilePicture> ProfilePictures { get; set; }
+        public DbSet<Adress> Adresses { get; set; }
     }
 }
