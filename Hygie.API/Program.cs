@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using MediatR;
 using System.Configuration;
+using Hygie.App.Commands.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,8 @@ builder.Services.AddAuthentication(x =>
 
 // Dependency injection with key
 builder.Services.AddSingleton<ITokenGenerator>(new TokenGenerator(_key!, _issuer!, _audience!, _expirtyMinutes!));
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateUserCommand).GetTypeInfo().Assembly));
 
 // Include Infrastructur Dependency
 builder.Services.AddInfrastructure(builder.Configuration);
