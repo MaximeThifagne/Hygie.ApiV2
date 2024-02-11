@@ -15,7 +15,6 @@ namespace Hygie.API.Controllers
     [ApiController]
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Admin, Management")]
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -113,6 +112,22 @@ namespace Hygie.API.Controllers
         [Consumes("multipart/form-data")]
         [ProducesDefaultResponseType(typeof(int))]
         public async Task<IActionResult>UpdateProfilePicture([FromForm] UpdateProfilePictureCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpPost("UpdateAdress")]
+        [Authorize(Roles = "patient, nurse, pharmacist")]
+        public async Task<IActionResult> UpdateAdress([FromBody] UpdateAdressCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpPost("UpdatePhoneNumber")]
+        [Authorize(Roles = "patient, nurse, pharmacist")]
+        public async Task<IActionResult> UpdatePhoneNumber([FromBody] UpdatePhoneNumberCommand command)
         {
             var result = await _mediator.Send(command);
             return Ok(result);

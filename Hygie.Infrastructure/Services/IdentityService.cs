@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Hygie.Core.Entities;
 using Microsoft.SqlServer.Server;
 using System.Web;
+using System.Threading.Tasks;
 
 namespace Hygie.Infrastructure.Services
 {
@@ -121,11 +122,14 @@ namespace Hygie.Infrastructure.Services
             return roles.Select(role => (role.Id, role.Name!)).ToList();
         }
 
-        public async Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles, ProfilePicture? profileImage)> GetUserDetailsAsync(string userId)
+        public async Task<(string userId, string? fullName, string? UserName, string? email,bool? emailVerified,string? phoneNumber, IList<string>? roles,Adress? adress, ProfilePicture? profileImage)> GetUserDetailsAsync(string userId)
         {
-            var user = await _userManager.Users.Include(u => u.ProfilePicture).FirstOrDefaultAsync(x => x.Id == userId) ?? throw new NotFoundException("User not found");
+            var user = await _userManager.Users
+                .Include(u => u.ProfilePicture)
+                .Include(u => u.Adress)
+                .FirstOrDefaultAsync(x => x.Id == userId) ?? throw new NotFoundException("User not found");
             var roles = await _userManager.GetRolesAsync(user);
-            return (user.Id, user.FullName, user.UserName, user.Email, roles, user.ProfilePicture);
+            return (user.Id, user.FullName, user.UserName, user.Email, user.EmailConfirmed,user.PhoneNumber, roles, user.Adress, user.ProfilePicture);
         }
 
         public async Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles)> GetUserDetailsByUserNameAsync(string userName)
@@ -187,6 +191,50 @@ namespace Hygie.Infrastructure.Services
                 return result.Succeeded;
             }
 
+            return false;
+        }
+
+        public async Task<bool> UpdateAdress(string id, string Number, string Street, string? Complement, string City, string ZipCode)
+        {
+            var user = await _userManager.Users.Include(u => u.Adress).FirstOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException("User not found");
+            if (user != null)
+            {
+                if (user.Adress == null)
+                {
+                    user.Adress = new Adress
+                    {
+                        CreatedDate = DateTime.Now,
+                        Number = Number,
+                        Street = Street,
+                        Complement = Complement,
+                        City = City,
+                        ZipCode = ZipCode
+                    };
+                }
+                else
+                {
+                    user.Adress.Number = Number;
+                    user.Adress.Street = Street;
+                    user.Adress.Complement = Complement;
+                    user.Adress.City = City;
+                    user.Adress.ZipCode = ZipCode;
+                }
+
+                var result = await _userManager.UpdateAsync(user);
+                return result.Succeeded;
+            }
+            return false;
+        }
+
+        public async Task<bool> UpdatePhoneNumber(string id, string phoneNumber)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                user.PhoneNumber = phoneNumber;
+                var result = await _userManager.UpdateAsync(user);
+                return result.Succeeded;
+            }
             return false;
         }
 

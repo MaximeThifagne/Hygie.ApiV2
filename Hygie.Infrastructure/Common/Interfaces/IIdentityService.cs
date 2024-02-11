@@ -10,13 +10,15 @@ namespace Hygie.Infrastructure.Common.Interfaces
         Task<bool> SigninUserAsync(string userName, string password);
         Task<string> GetUserIdAsync(string userName);
         Task<bool> IsExistByEmail(string email);
-        Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles, ProfilePicture? profileImage)> GetUserDetailsAsync(string userId);
+        Task<(string userId, string? fullName, string? UserName, string? email,bool?emailVerified,string? phoneNumber, IList<string>? roles,Adress? adress, ProfilePicture? profileImage)> GetUserDetailsAsync(string userId);
         Task<(string userId, string? fullName, string? UserName, string? email, IList<string>? roles)> GetUserDetailsByUserNameAsync(string userName);
         Task<string> GetUserNameAsync(string userId);
         Task<bool> DeleteUserAsync(string userId);
         Task<bool> IsUniqueUserName(string userName);
         Task<List<(string id, string? fullName, string? userName, string? email)>> GetAllUsersAsync();
         Task<bool> UpdateUserProfile(string id, string? fullName, string? email, IList<string>? roles);
+        Task<bool> UpdateAdress(string id, string Number, string Street, string? Complement, string City, string ZipCode);
+        Task<bool> UpdatePhoneNumber(string id, string phoneNumber);
         Task<bool> UpdateProfilePictureCommand(string id, IFormFile file);
         Task<bool> ChangePassword(string id, string token, string password, string confirmPassword);
         Task<bool> ConfirmEmail(string id, string token);
