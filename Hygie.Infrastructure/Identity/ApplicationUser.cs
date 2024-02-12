@@ -12,7 +12,7 @@ namespace Hygie.Infrastructure.Identity
         public Int64? ProfilePictureId { get; set; }
 
         [ForeignKey("Adress")]
-        public Int64? AdrressId { get; set; }
+        public Int64? AdressId { get; set; }
 
         public ProfilePicture? ProfilePicture { get; set; }
 
