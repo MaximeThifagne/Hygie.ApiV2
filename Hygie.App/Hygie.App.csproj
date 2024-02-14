@@ -19,4 +19,10 @@
     <ProjectReference Include="..\Hygie.Infrastructure\Hygie.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Commands\Patient\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\Patient\" />
+  </ItemGroup>
 </Project>

@@ -14,5 +14,6 @@ namespace Hygie.Infrastructure.Data
         }
         public DbSet<ProfilePicture> ProfilePictures { get; set; }
         public DbSet<Adress> Adresses { get; set; }
+        public DbSet<PatientExitDate> PatientExitDates { get; set; }
     }
 }

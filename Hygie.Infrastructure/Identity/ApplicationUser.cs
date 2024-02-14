@@ -17,7 +17,5 @@ namespace Hygie.Infrastructure.Identity
         public ProfilePicture? ProfilePicture { get; set; }
 
         public Adress? Adress { get; set; }
-
-
     }
 }

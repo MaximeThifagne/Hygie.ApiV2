@@ -5,9 +5,6 @@ using Hygie.Infrastructure.Common.Interfaces;
 using Hygie.Infrastructure.Common.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Hygie.Core.Entities;
-using Microsoft.SqlServer.Server;
-using System.Web;
-using System.Threading.Tasks;
 
 namespace Hygie.Infrastructure.Services
 {

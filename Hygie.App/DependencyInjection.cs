@@ -55,6 +55,7 @@ namespace Hygie.App
 
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IMailService, MailService>();
+            services.AddScoped<IPatientService, PatientService>();
 
             services.AddScoped(typeof(IQueryRepository<>), typeof(QueryRepository<>));
             services.AddScoped(typeof(ICommandRepository<>), typeof(CommandRepository<>));
