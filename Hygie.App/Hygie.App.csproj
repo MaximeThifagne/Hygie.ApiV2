@@ -21,8 +21,10 @@
 
   <ItemGroup>
     <None Remove="Commands\Patient\" />
+    <None Remove="Queries\Patient\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Patient\" />
+    <Folder Include="Queries\Patient\" />
   </ItemGroup>
 </Project>

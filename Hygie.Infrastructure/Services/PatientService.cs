@@ -18,11 +18,11 @@ namespace Hygie.Infrastructure.Services
             _patientExitDateCommandRepository = patientExitDateCommandRepository;
         }
 
-        public async Task<bool> SetHospitalExitDateAsync(string userId,DateTime exitDate)
+        public async Task<bool> SetHospitalExitDateAsync(string userId, DateTime exitDate)
         {
             var existingPatientExitDate = await _patientExitDateQueryRepository.FindAsync(i => i.UserId == userId);
 
-            if(existingPatientExitDate == null)
+            if (existingPatientExitDate == null)
             {
                 var patientExitDate = new PatientExitDate
                 {
@@ -40,6 +40,13 @@ namespace Hygie.Infrastructure.Services
             }
 
             return true;
+        }
+
+        public async Task<DateTime?> GetHospitalExitDateAsync(string userId)
+        {
+            var patientExitDate = await _patientExitDateQueryRepository.FindAsync(i => i.UserId == userId);
+
+            return patientExitDate?.ExitDate;
         }
     }
 }
