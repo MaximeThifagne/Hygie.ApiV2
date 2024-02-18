@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Hygie.App.Commands.Patient;
 using Hygie.App.Queries.Patient;
+using Hygie.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -56,6 +57,37 @@ namespace Hygie.API.Controllers
             catch (Exception ex)
             {
                 return Problem(ex.Message, statusCode: 500);
+            }
+        }
+
+        [HttpGet("Documents")]
+        [ProducesDefaultResponseType(typeof(List<Document>))]
+        public async Task<IActionResult> Documents()
+        {
+            try
+            {
+                string userId = this.User.Claims.First(c => c.Type == "UserId")!.Value;
+                var query = new GetDocumentsQuery(userId);
+
+                return Ok(await _mediator.Send(query));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 500);
+            }
+        }
+
+        [HttpPost("Document")]
+        [ProducesDefaultResponseType(typeof(bool))]
+        public async Task<IActionResult> Document([FromBody] AddDocumentCommand command)
+        {
+            try
+            {
+                return Ok(await _mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                return Problem("Internal server error",ex.Message);
             }
         }
     }
