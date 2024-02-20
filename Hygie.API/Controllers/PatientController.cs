@@ -78,8 +78,9 @@ namespace Hygie.API.Controllers
         }
 
         [HttpPost("Document")]
+        [Consumes("multipart/form-data")]
         [ProducesDefaultResponseType(typeof(bool))]
-        public async Task<IActionResult> Document([FromBody] AddDocumentCommand command)
+        public async Task<IActionResult> Document([FromForm] AddDocumentCommand command)
         {
             try
             {

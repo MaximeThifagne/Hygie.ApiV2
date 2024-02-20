@@ -76,6 +76,7 @@ namespace Hygie.Infrastructure.Services
                 };
 
                 await _documentCommandRepository.AddAsync(document);
+
             }
             else
             {
